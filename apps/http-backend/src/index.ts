@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors())
 
 app.post("/signup", async (req, res) => {
-    
+
     const parsedData = CreateUserSchema.safeParse(req.body);
 
     if(!parsedData.success) {
@@ -24,14 +24,15 @@ app.post("/signup", async (req, res) => {
     }
 
     try {
-        
-        const hashedPass = await bcrypt.hash(parsedData.data.password, 10);
+
+        const hashedPass = await bcrypt.hash(parsedData.data.password!, 10);
 
         const user = await prismaClient.user.create({
             data: {
                 email: parsedData.data.username,
                 password: hashedPass,
                 name: parsedData.data.name
+
             }
         })
 
@@ -44,7 +45,7 @@ app.post("/signup", async (req, res) => {
             message: "User already exists with this username"
         })
     }
-    
+
 })
 
 app.post("/signin", async (req, res) => {
@@ -117,13 +118,13 @@ app.post("/room", authMiddleware, async (req, res) =>{
     try {
         const room = await prismaClient.room.create({
         data :{
-            slug: parsedData.data.name,
-            adminId: userId
-        }
+                slug: parsedData.data.name,
+                adminId: userId
+            }
         })
 
         res.json({
-            roomId : room.id
+            roomId: room.id
         })
 
     }catch(e){
@@ -156,7 +157,7 @@ app.get("/chats/:roomId", async (req, res) => {
             messages: []
         })
     }
-    
+
 })
 
 app.get("/room/:slug", async (req, res) => {
@@ -173,5 +174,55 @@ app.get("/room/:slug", async (req, res) => {
         room
     })
 })
+
+app.post("/google-login", async (req, res) => {
+    try {
+        const { email, name, photo } = req.body;
+
+        if (!email || !name) {
+            res.status(400).json({
+                message: "Email and Name are required"
+            });
+            return;
+        }
+
+        let user = await prismaClient.user.findFirst({
+            where: {
+                email
+            }
+        });
+
+        if (!user) {
+            user = await prismaClient.user.create({
+                data: {
+                    email,
+                    name,
+                    photo
+                }
+            });
+        } else if (photo && user.photo !== photo) {
+            await prismaClient.user.update({
+                where: { id: user.id },
+                data: { photo }
+            });
+        }
+
+        const token = jwt.sign({
+            userId: user.id
+        }, JWT_SECRET, { expiresIn: "1d" });
+
+        res.json({
+            message: "Google Login Success",
+            data: { userId: user.id, token: token }
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
+})
+
 
 app.listen(3001);
