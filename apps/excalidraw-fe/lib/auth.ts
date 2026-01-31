@@ -44,11 +44,16 @@ export const authOptions: NextAuthOptions = {
             }
         })
     ],
-    
+
     secret: process.env.NEXTAUTH_SECRET,
 
     callbacks: {
         async jwt({ token, user, account }) {
+            // Store user id in token
+            if (user) {
+                token.userId = user.id;
+            }
+
             if (user && user.accessToken) {
                 token.accessToken = user.accessToken;
                 return token;
@@ -63,8 +68,8 @@ export const authOptions: NextAuthOptions = {
                     });
 
                     if (res.data && res.data.data && res.data.data.token) {
-                        token.accessToken = res.data.data.token
-                        console.log("this is from auth.ts ", token)
+                        token.accessToken = res.data.data.token;
+                        token.userId = res.data.data.userId;
                     }
                 } catch (error) {
                     console.error("Failed to sync user with backend:", error);
@@ -75,6 +80,7 @@ export const authOptions: NextAuthOptions = {
 
         async session({ session, token }) {
             session.accessToken = token.accessToken;
+            session.user.id = token.userId as string;
             return session;
         }
     },

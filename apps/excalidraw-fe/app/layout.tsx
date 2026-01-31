@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Create hand-drawn style diagrams with real-time collaboration, complete privacy, and unlimited possibilities. No account needed.",
   openGraph: {
-    title: "Excalidraw | Virtual Whiteboard",
+    title: "SketchFlow | Virtual Whiteboard",
     description: "Create beautiful hand-drawn diagrams collaboratively",
   },
   twitter: {
@@ -41,3 +41,4 @@ export default function RootLayout({
     </html>
   );
 }
+

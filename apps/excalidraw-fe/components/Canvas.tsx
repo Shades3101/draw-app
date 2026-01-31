@@ -34,7 +34,7 @@ export function Canvas({
         }
     }, [canvasRef]);
 
-    return <div className="h-screen w-screen overflow-hidden bg-white dark:bg-zinc-950 relative">
+    return <div className="h-full w-full overflow-hidden bg-white dark:bg-zinc-950 relative">
         <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
         <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
     </div>

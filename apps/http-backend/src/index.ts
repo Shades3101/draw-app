@@ -15,7 +15,7 @@ app.post("/signup", async (req, res) => {
 
     const parsedData = CreateUserSchema.safeParse(req.body);
 
-    if(!parsedData.success) {
+    if (!parsedData.success) {
         res.json({
             message: "Incorrect Inputs"
         })
@@ -40,7 +40,7 @@ app.post("/signup", async (req, res) => {
             userId: user.id
         })
 
-    } catch (e){
+    } catch (e) {
         res.status(411).json({
             message: "User already exists with this username"
         })
@@ -52,7 +52,7 @@ app.post("/signin", async (req, res) => {
 
     const parsedData = SigninSchema.safeParse(req.body);
     console.log(parsedData)
-    if(!parsedData.success) {
+    if (!parsedData.success) {
         res.json({
             message: "Incorrect Inputs"
         })
@@ -66,13 +66,13 @@ app.post("/signin", async (req, res) => {
         }
     })
 
-    if(!user) {
+    if (!user) {
         res.json({
             message: "Signup first"
         })
     }
 
-    if(!parsedData.data.password || !user?.password){
+    if (!parsedData.data.password || !user?.password) {
         res.json({
             message: "Please Input Password"
         })
@@ -81,24 +81,25 @@ app.post("/signin", async (req, res) => {
 
     const passMatch = await bcrypt.compare(parsedData.data.password, user.password)
 
-    if(passMatch) {
+    if (passMatch) {
 
         const token = jwt.sign({
             userId: user.id
         }, JWT_SECRET)
 
         res.json({
-            token
+            token,
+            userId: user.id
         })
     }
 
 })
 
-app.post("/room", authMiddleware, async (req, res) =>{
+app.post("/room", authMiddleware, async (req, res) => {
 
     const parsedData = CreateRoomSchema.safeParse(req.body);
 
-    if(!parsedData.success) {
+    if (!parsedData.success) {
         res.json({
             message: "Incorrect Inputs"
         })
@@ -108,7 +109,7 @@ app.post("/room", authMiddleware, async (req, res) =>{
 
     const userId = req.userId;
 
-    if(!userId) {
+    if (!userId) {
         res.json({
             message: "UserID is Required"
         })
@@ -117,7 +118,7 @@ app.post("/room", authMiddleware, async (req, res) =>{
 
     try {
         const room = await prismaClient.room.create({
-        data :{
+            data: {
                 slug: parsedData.data.name,
                 adminId: userId
             }
@@ -127,7 +128,7 @@ app.post("/room", authMiddleware, async (req, res) =>{
             roomId: room.id
         })
 
-    }catch(e){
+    } catch (e) {
         res.status(411).json({
             message: "Room Already Exists with this name"
         })
@@ -151,7 +152,7 @@ app.get("/chats/:roomId", async (req, res) => {
         res.json({
             messages
         })
-    } catch(e) {
+    } catch (e) {
         console.log(e);
         res.json({
             messages: []
