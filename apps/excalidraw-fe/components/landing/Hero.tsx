@@ -19,17 +19,18 @@ export function Hero() {
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Link
-                                href="/signin"
+                            <Link href="/random"
                                 className="flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
                             >
                                 Start Drawing
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
-                            <button className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 dark:bg-zinc-900 dark:text-blue-400 dark:border-blue-500 dark:hover:bg-zinc-800 transition-colors duration-300 font-semibold">
 
-                                Sign In
-                            </button>
+                            <Link href={"/signin"}>
+                                <button className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 dark:bg-zinc-900 dark:text-blue-400 dark:border-blue-500 dark:hover:bg-zinc-800 transition-colors duration-300 font-semibold" >
+                                    Sign In
+                                </button>
+                            </Link>
                         </div>
 
                         <div className="flex items-center gap-8 text-gray-600 dark:text-gray-400 pt-4">

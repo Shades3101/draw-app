@@ -163,17 +163,32 @@ app.get("/chats/:roomId", async (req, res) => {
 
 app.get("/room/:slug", async (req, res) => {
 
-    const slug = req.params.slug
+    const slug = req.params.slug;
 
-    const room = await prismaClient.room.findFirst({
-        where: {
-            slug
+    try {
+        const room = await prismaClient.room.findFirst({
+            where: {
+                slug
+            }
+        })
+
+        if (!room) {
+            return res.status(404).json({
+                message: "Room Does not Exist."
+            })
         }
-    })
 
-    res.json({
-        room
-    })
+        res.json({
+            room
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal Server Error"
+        })
+    }
+
 })
 
 app.post("/google-login", async (req, res) => {
