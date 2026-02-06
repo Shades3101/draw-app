@@ -5,6 +5,7 @@ import { Mouse } from "./mouse/Mouse";
 import { Renderer } from "./renderer/Renderer";
 import { tools } from "./tools";
 import { Pencil } from "./shapes/Pencil";
+import { SocketQueue } from "./SocketQueue";
 
 export class Game {
 
@@ -15,6 +16,7 @@ export class Game {
     private existingShapes: Shape[] = [];
     private roomId: string;
     socket: WebSocket;
+    private socketQueue: SocketQueue;
     private mouse = new Mouse();
     private currentTool: Tool = tools.circle;
 
@@ -25,6 +27,7 @@ export class Game {
         this.canvas = canvas;
         this.roomId = roomId;
         this.socket = socket;
+        this.socketQueue = new SocketQueue(socket);
         this.bgColor = isDark ? "#09090b" : "#fafafa";
         this.strokeColor = isDark ? "#f4f4f5" : "#2c2c2c";
         const ctx = canvas.getContext("2d")!;
@@ -90,7 +93,7 @@ export class Game {
                     );
                 }
 
-                if(data.type === "Pencil") {
+                if (data.type === "Pencil") {
                     this.existingShapes.push(
                         new Pencil(data.points)
                     )
@@ -130,15 +133,11 @@ export class Game {
         this.existingShapes.push(shape);
         this.clearCanvas();
 
-        if (this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(JSON.stringify({
-                type: "chat",
-                roomId: this.roomId,
-                message: shape.toJSON()
-            }))
-        } else {
-            console.warn("WebSocket is not open. Shape not sent to server.");
-        }
+        this.socketQueue.send({
+            type: "chat",
+            roomId: this.roomId,
+            message: shape.toJSON()
+        });
     }
 
     mouseMoveHandler = (e: MouseEvent) => {

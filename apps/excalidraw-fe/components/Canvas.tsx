@@ -59,7 +59,7 @@ export function Canvas({
                 window.removeEventListener('resize', handleResize);
             }
         }
-    }, [canvasRef, roomId, socket, mounted, resolvedTheme]);
+    }, [canvasRef, roomId, socket, mounted]);
 
     return (
         <div className="h-screen w-full overflow-hidden bg-[#fafafa] dark:bg-zinc-950 relative selection:bg-blue-100 dark:selection:bg-blue-900 transition-colors duration-300">

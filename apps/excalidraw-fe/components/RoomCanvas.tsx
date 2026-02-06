@@ -3,6 +3,7 @@
 import { WS_URL } from "@/config";
 import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
+import { error } from "console";
 
 export function RoomCanvas({ roomId, token }: { roomId: string; token: string }) {
 
@@ -19,6 +20,9 @@ export function RoomCanvas({ roomId, token }: { roomId: string; token: string })
             }));
         };
 
+        ws.onerror = (error) => {
+            console.log("Room Canvas WS Error:",error)
+        }
         return () => {
             ws.close();
         };
