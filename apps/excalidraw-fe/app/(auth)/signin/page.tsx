@@ -104,10 +104,7 @@ const SignIn = () => {
                         <div className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="font-black uppercase text-xs tracking-wider text-[#2c2c2c]">Email Address</Label>
-                                <Input 
-                                    id="email" 
-                                    type="email" 
-                                    placeholder="YOU@EXAMPLE.COM" 
+                                <Input id="email" type="email" placeholder="YOU@EXAMPLE.COM" 
                                     className="h-14 border-2 border-[#2c2c2c] rounded-none focus-visible:ring-0 focus-visible:border-blue-500 bg-white font-bold placeholder:text-zinc-300 transition-all"
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
@@ -120,10 +117,7 @@ const SignIn = () => {
                                         Forgot?
                                     </Link>
                                 </div>
-                                <Input 
-                                    id="password" 
-                                    type="password" 
-                                    placeholder="••••••••" 
+                                <Input id="password" type="password" placeholder="••••••••" 
                                     className="h-14 border-2 border-[#2c2c2c] rounded-none focus-visible:ring-0 focus-visible:border-blue-500 bg-white font-bold placeholder:text-zinc-300 transition-all"
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
@@ -156,8 +150,7 @@ const SignIn = () => {
                                 <div className="flex-grow border-t-2 border-[#2c2c2c]/10"></div>
                             </div>
 
-                            <Button 
-                                variant="outline" 
+                            <Button variant="outline" 
                                 className="w-full h-14 border-2 border-[#2c2c2c] rounded-none bg-white hover:bg-zinc-50 font-black uppercase text-sm tracking-widest flex items-center justify-center gap-3 transition-all" 
                                 onClick={() => signIn("google", { callbackUrl: "/" })}
                             >
