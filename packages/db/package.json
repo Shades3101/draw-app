@@ -2,18 +2,20 @@
   "name": "@repo/db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/client.js",
+  "types": "./dist/client.d.ts",
   "exports": {
-    "./*": "./src/*.ts"
+    "./client": "./dist/client.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "prisma generate && tsc -b",
+    "check-types": "tsc --noEmit",
     "db:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "@prisma/client": "6.17.1",
     "prisma": "^6.17.1"
