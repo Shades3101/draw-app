@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { prismaClient } from "@repo/db/client"
 import crypto from "crypto";
 
-const wss = new WebSocketServer ({ port:8080});
+const wss = new WebSocketServer({ port: Number(process.env.PORT) || 8080 });
 
 interface User {
     ws: WebSocket,
@@ -24,17 +24,17 @@ function checkUser(token: string): string | null {
     try {
         const vtoken = jwt.verify(token, JWT_SECRET)
 
-    if(typeof vtoken == "string") {
+        if (typeof vtoken == "string") {
             return null
         }
 
-    if(!vtoken || !vtoken.userId){
+        if (!vtoken || !vtoken.userId) {
             return null
         }
         console.log("user reached here")
         return vtoken.userId
 
-    } catch(e){
+    } catch (e) {
         return null
     }
     return null;
@@ -44,7 +44,7 @@ wss.on('connection', function connection(ws, request) {
 
     const url = request.url;
 
-    if(!url) {
+    if (!url) {
         return;
     }
 
@@ -83,13 +83,13 @@ wss.on('connection', function connection(ws, request) {
         // try this if the above fails 
         let parsedData;
 
-        if(typeof data !== "string" ) {
+        if (typeof data !== "string") {
             parsedData = JSON.parse(data.toString());
         } else {
             parsedData = JSON.parse(data);
         }
 
-        if(parsedData.type === "join_room") {
+        if (parsedData.type === "join_room") {
             const user = users.find(x => x.ws === ws);
             const roomId = parsedData.roomId;
 
@@ -104,16 +104,16 @@ wss.on('connection', function connection(ws, request) {
             user?.rooms.push(roomId);
         }
 
-        if(parsedData.type === "leave_room") {
+        if (parsedData.type === "leave_room") {
             const user = users.find(x => x.ws === ws);
-            if(!user){
+            if (!user) {
                 return;
             }
             user.rooms = user?.rooms.filter(x => x === parsedData.room)
 
         }
 
-        if(parsedData.type === "chat") {
+        if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
             const user = users.find(x => x.ws === ws);
