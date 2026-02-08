@@ -61,10 +61,12 @@ export const authOptions: NextAuthOptions = {
 
             if (user && account?.provider === "google" && !token.accessToken) {
                 try {
+                    if (!account.id_token) {
+                        return token;
+                    }
+
                     const res = await axios.post(`${HTTP_BACKEND}/google-login`, {
-                        email: user.email,
-                        name: user.name,
-                        photo: user.image
+                        idToken: account.id_token
                     });
 
                     if (res.data && res.data.data && res.data.data.token) {

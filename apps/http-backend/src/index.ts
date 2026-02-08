@@ -92,7 +92,12 @@ app.post("/signin", async (req, res) => {
             token,
             userId: user.id
         })
+        return;
     }
+
+    res.status(401).json({
+        message: "Invalid credentials"
+    })
 
 })
 
@@ -260,14 +265,52 @@ app.delete("/delete-room/:roomId", authMiddleware, async (req, res) => {
 
 app.post("/google-login", async (req, res) => {
     try {
-        const { email, name, photo } = req.body;
+        const { idToken } = req.body;
 
-        if (!email || !name) {
+        if (!idToken) {
             res.status(400).json({
-                message: "Email and Name are required"
+                message: "idToken is required"
             });
             return;
         }
+
+        const googleClientId = process.env.GOOGLE_CLIENT_ID;
+
+        if (!googleClientId) {
+            res.status(500).json({
+                message: "Server misconfiguration: GOOGLE_CLIENT_ID missing"
+            });
+            return;
+        }
+
+        const verifyUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`;
+        const verifyResponse = await fetch(verifyUrl);
+
+        if (!verifyResponse.ok) {
+            res.status(401).json({
+                message: "Invalid Google token"
+            });
+            return;
+        }
+
+        const payload = await verifyResponse.json() as {
+            aud?: string;
+            email?: string;
+            name?: string;
+            picture?: string;
+            email_verified?: "true" | "false";
+        };
+
+        if (payload.aud !== googleClientId || payload.email_verified !== "true" || !payload.email || !payload.name) {
+            res.status(401).json({
+                message: "Invalid Google token claims"
+            });
+            return;
+        }
+
+        const email = payload.email;
+        const name = payload.name;
+        const photo = payload.picture;
 
         let user = await prismaClient.user.findFirst({
             where: {

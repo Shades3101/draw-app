@@ -13,9 +13,9 @@ async function getRoomId(slug: string) {
 }
 
 export default async function CanvasPage({ params }: {
-    params: {
+    params: Promise<{
         slug: string
-    }
+    }>
 }) {
     const slug = (await params).slug;
     const roomId = await getRoomId(slug);
