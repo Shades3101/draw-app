@@ -292,7 +292,10 @@ app.post("/google-login", async (req, res) => {
 
         const token = jwt.sign({
             userId: user.id
-        }, JWT_SECRET, { expiresIn: "1d" });
+        }, JWT_SECRET, { 
+            
+            expiresIn: "1d" 
+        });
 
         res.json({
             message: "Google Login Success",
