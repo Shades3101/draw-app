@@ -14,8 +14,6 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@repo/backend-common": "workspace:*",
-    "@repo/common": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
@@ -23,6 +21,8 @@
     "@types/jsonwebtoken": "^9.0.10"
   },
   "dependencies": {
+    "@repo/backend-common": "workspace:*",
+    "@repo/common": "workspace:*",
     "@repo/db": "workspace:*",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
